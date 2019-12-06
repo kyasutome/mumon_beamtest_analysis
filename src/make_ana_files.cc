@@ -57,7 +57,7 @@ int main(int argc, char *argv[]){
   const int data = 2050; //number of samples
   const int nch = 3;
   const int max = 2050;
-  const int range = 10000;
+  const int range = 17000;
 
   int ifile=0;
   int chnum;
@@ -137,13 +137,17 @@ int main(int argc, char *argv[]){
 	    
 	    //TH1D* waveH = new TH1D(Form("wave_ch%d_%d", ich, num[ich]), "wave", data, 0, data);
 	    TH1D* pedeHist = new TH1D(Form("h_ch%d_%d", ich, num[ich]), "pedestal", range, 0, range);
+
+	    for(int i = 0; i < 2; i++){
+	      fin[ich] >> dummy;
+	    }
 	    
 	    for(int i = 0; i < startbin; i++){
 	      fin[ich] >> dummy;
 	      array[ich][i] = dummy;
 	    }
 	    
-	    for(int i = 0; i < binnum; i++){  //where signal is
+	    for(int i = startbin; i < endbin; i++){  //where signal is
 	      fin[ich] >> value;
 	      array[ich][i] = value;
 	      charge = charge + value;	      
@@ -154,7 +158,7 @@ int main(int argc, char *argv[]){
 	      
 	    }
 	    
-	    for(int i = 0; i < data-endbin; i++){
+	    for(int i = endbin; i < data; i++){
 	      fin[ich] >> value;
 	      array[ich][i] = value;
 	      pedeHist->Fill(value);

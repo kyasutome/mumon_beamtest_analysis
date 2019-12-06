@@ -50,14 +50,13 @@ int main(int argc, char *argv[]){
   
   const int data = 2050; //number of samples
   const int nch = 3;
-  const int max = 2050;
-  const int range = 10000;
+  const int range = 17000;
 
   int chnum;
   int channel[nch];
   int num[nch] = {};
   int entry[nch] = {};
-  double array[nch][max] = {};  //waveform
+  double array[nch][data] = {};  //waveform
 
   //for pedestal calculation
   double pedestal[nch];
@@ -117,12 +116,16 @@ int main(int argc, char *argv[]){
       //TH1D* waveH = new TH1D(Form("wave_ch%d_%d", ich, num[ich]), "wave", data, 0, data);
       TH1D* pedeHist = new TH1D(Form("h_ch%d_%d", ich, num[ich]), "pedestal", range, 0, range);
       
+      for(int i = 0; i < 2; i++){
+        fin[ich] >> dummy;
+      }
+
       for(int i = 0; i < startbin; i++){
         fin[ich] >> dummy;
 	array[ich][i] = dummy;
-      }
+      }      
 
-      for(int i = 0; i < binnum; i++){  //where signal is
+      for(int i = startbin; i < endbin; i++){  //where signal is
 	fin[ich] >> value;
 	array[ich][i] = value;
 	charge = charge + value;
@@ -134,13 +137,20 @@ int main(int argc, char *argv[]){
 
       }
 
-      for(int i = 0; i < data-endbin; i++){
+      for(int i = endbin; i < data; i++){
 	fin[ich] >> value;
 	array[ich][i] = value;
 	pedeHist->Fill(value);
       }
 
-      pedeHist->Fit("gaus","Q","", 0, range);
+      if(pedeHist->Fit("gaus","Q",0, range) == -1)
+	{
+	  delete pedeHist;
+	  cout << "entry " << num[0] << '\n';
+	  cout << "Fit failed. This event is skipped." << '\n';
+	  continue;
+	}
+
       f = pedeHist->GetFunction("gaus");
       pedestal[ich] = f->GetParameter(1);
       sigma[ich] = f->GetParameter(2);

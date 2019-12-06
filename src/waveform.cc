@@ -58,17 +58,17 @@ int main( int argc, char* argv[] )
 
     if ( detector == 1 ) {       // CT 
       for ( int i = 0; i < 2050; i++ ) {  
-        hist->Fill( i, array[1][i] );
+        hist->Fill( i, array[0][i] );
       }
     }
     else if ( detector == 2 ) {  // Si  
       for ( int i = 0; i < 2050; i++ ) {  
-        hist->Fill( i, array[2][i] );
+        hist->Fill( i, array[1][i] );
       }
     }
     else if ( detector == 3 ) {  // EMT 
       for ( int i = 0; i < 2050; i++ ) {  
-        hist->Fill( i, array[3][i] );
+        hist->Fill( i, array[2][i] );
       }
     }
   }//loop ientry

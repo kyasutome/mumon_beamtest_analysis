@@ -4,7 +4,7 @@
 #
 
 filedir="../process"
-muanafile="run_00060.root"  # after  P5B <--> P6B switch
+muanafile="run_00056.root"  # after  P5B <--> P6B switch
 anadata=${filedir}/${muanafile}
 
 if [ $# -ne 2 ] ; then
